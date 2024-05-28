@@ -7,6 +7,8 @@ import requests
 
 from symtable import Symbol
 from colorama import Fore, Style
+from binance.client import Client
+from binance.exceptions import BinanceAPIException
 
 config = configparser.ConfigParser()
 pathinifile = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
@@ -23,7 +25,7 @@ print ("Logged in")
 
 
 ##########################################################################################################################
-apiadress = ("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD")
+apiadress = ("https://api.binance.com/api/v3/ticker/price?symbol=AXSUSDT")                                      ### Trade Coin                               # change coin //////////
 price = requests.get(apiadress)  
 price = price.json()  
 price = float(price['price'])
@@ -86,9 +88,9 @@ if stage == 1 or stage == 2 or stage == 3 or stage == 4 :
     order1=eval(order1)
     order2=eval(order2)
     order3=eval(order3)
-    order1=round((order1),2)
-    order2=round((order2),2)
-    order3=round((order3),2)
+    order1=round((order1),3)
+    order2=round((order2),3)
+    order3=round((order3),3)
     maxp=maxprice
     mixp=minprice
 
@@ -97,15 +99,15 @@ if stage == 1 or stage == 2 or stage == 3 or stage == 4 :
 ##########################################################################################################################
 ##################################################       START       #####################################################
 ##########################################################################################################################
-clear = lambda: os.system('cls')  #windows
-#clear = lambda: os.system('clear') #linux
+#clear = lambda: os.system('cls')                                                                 ###     Windows                                         #windows
+clear = lambda: os.system('clear')                                                              ###     Linux                                          #linux
 
 
 def chek():############################################################################################   Check
 #    time.sleep(1)
     global price, maxprice, minprice
     global stage
-    apiadress = ("https://api.binance.com/api/v3/ticker/price?symbol=BTCBUSD")
+    apiadress = ("https://api.binance.com/api/v3/ticker/price?symbol=AXSUSDT")                                             ### UI Coin                    # change coin /////
     price = requests.get(apiadress)  
     price = price.json()  
     price=float(price['price'])
@@ -119,10 +121,10 @@ def start():####################################################################
     global price, maxprice, minprice, maxp, mixp, enterprice, midprice, midprice1, midprice2, midprice3
     global stepp,stage, status, target
     global order1, order2, order3, order4, order5, anykeystart
-#    order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=coinquantity,)                                                  #   uncomment for work !!!
-#    enterprice=float(order["fills"][0]["price"])   
+    order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=coinquantity,)                                                  #   uncomment for work !!!
+    enterprice=float(order["fills"][0]["price"])   
     
-    enterprice=price                                                                                                                         #   comment for work !!!
+    #enterprice=price                                                                                                                         #   comment for work !!!
     maxprice=price
     minprice=price
     midprice=price
@@ -138,10 +140,10 @@ def start():####################################################################
     order1=eval(order1) #(stepp*(price*3))/100
     order2=eval(order2)
     order3=eval(order3)
-    target=round((enterprice)+((midprice*stepp)/100),2)
-    order1=round((order1),2)
-    order2=round((order2),2)
-    order3=round((order3),2)
+    target=round((enterprice)+((midprice*stepp)/100),3)
+    order1=round((order1),3)
+    order2=round((order2),3)
+    order3=round((order3),3)
     
     stage=1
     status=("waiting")
@@ -177,7 +179,7 @@ def trailing():#################################################################
     global stepp, stage, status
     global order1, order2, order3, order4, order5
     status="trailing"
-    target=round(maxprice-((midprice*stepp)/100),2)
+    target=round(maxprice-((midprice*stepp)/100),3)
     if maxprice>maxp:
         maxp=maxprice
         config.set('main', 'maxprice', str(maxprice))
@@ -189,16 +191,16 @@ def trailing():#################################################################
         print ('Sell ', target)
         if stage==1:
             print("sell")
-#            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity,)                                                  #   uncomment for work !!!
+            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity,)                                          #   uncomment for work !!!
         if stage==2:
             print("sell")
-#            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity*2,)
+            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity*2,)
         if stage==3:
             print("sell")
-#            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity*4,)
+            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity*4,)
         if stage==4:
             print("sell")
-#            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity*8,)
+            client.create_order(symbol=coin,side='sell',type='MARKET',quantity=coinquantity*8,)
         stage=0
         maxprice=0
         status="waiting"
@@ -218,10 +220,10 @@ def trailing():#################################################################
         order1=eval(order1) #(stepp*(price*3))/100
         order2=eval(order2)
         order3=eval(order3)
-        target=round((enterprice)+((midprice*stepp)/100),2)
-        order1=round((order1),2)
-        order2=round((order2),2)
-        order3=round((order3),2)
+        target=round((enterprice)+((midprice*stepp)/100),3)
+        order1=round((order1),3)
+        order2=round((order2),3)
+        order3=round((order3),3)
 
         time.sleep(2)
 #        start()
@@ -234,7 +236,7 @@ def UI():#######################################################################
     clear()
     print(f"Midprice is {midprice}         Enter point is {enterprice}")
     print(f"{Fore.RED}Target is   {target}{Style.RESET_ALL}\033[1m")
-    print(f"Price is    {float(price):.2f}\033[0m         Maximum is  {maxprice}")
+    print(f"Price is    {float(price):.3f}\033[0m         Maximum is  {maxprice}")
     if (stage==1) and (status=="waiting"):
         print(f"{Fore.GREEN}Order 1     {order1}{Style.RESET_ALL}")
     if (stage==1 or stage==2) and (status=="waiting"):
@@ -252,7 +254,7 @@ def stage1():###################################################################
     midprice=enterprice
     maxp=0
     maxprice=0
-    target=round((enterprice)+((midprice*stepp)/100),2)
+    target=round((enterprice)+(((midprice*stepp)*2)/100),3)
     config.set('main', 'stage', str(stage))
     config.set('main', 'enterprice', str(enterprice))
     config.set('main', 'midprice', str(midprice))
@@ -268,7 +270,7 @@ def stage2():###################################################################
     stage="loss-1"
     minprice=float(min(minprice,price))
 
-    target=round(minprice+((midprice*stepp)/100),2)
+    target=round(minprice+(((midprice*stepp)*2)/100),3)
     if minprice<mixp:
         mixp=minprice
         config.set('main', 'minprice', str(minprice))
@@ -277,8 +279,8 @@ def stage2():###################################################################
 
     if price>=target:
         stage=2
-        target=round((midprice)+((midprice*stepp)/100),2)
-        midprice=round((midprice+price)/2,2)
+        maxprice=price
+        midprice=round((midprice+price)/2,3)
 
         order1=config['settings']['order1']
         order2=config['settings']['order2']
@@ -290,16 +292,16 @@ def stage2():###################################################################
         order1=eval(order1) #(stepp*(price*3))/100
         order2=eval(order2)
         order3=eval(order3)
-        target=round(midprice+(stepp*(price*1))/100,2)
-        order1=round((order1),2)
-        order2=round((order2),2)
-        order3=round((order3),2)
+        target=round(midprice+(stepp*(price*1))/100,3)
+        order1=round((order1),3)
+        order2=round((order2),3)
+        order3=round((order3),3)
 
-#    order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=coinquantity,)                                                  #   uncomment for work !!!
+        order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=coinquantity,)                                           #   uncomment for work !!!
         config.set('main', 'stage', str(stage))
         config.set('main', 'enterprice', str(enterprice))
         config.set('main', 'midprice', str(midprice))
-#        config.set('main', 'target', str(target))
+        config.set('main', 'target', str(target))
         with open(pathinifilefull, 'w') as fff:
             config.write(fff)
 
@@ -310,7 +312,7 @@ def stage3():###################################################################
     stage="loss-2"
     minprice=float(min(minprice,price))
 
-    target=round(minprice+((midprice*stepp)/100),2)
+    target=round(minprice+(((midprice*stepp)*2)/100),3)
     if minprice<mixp:
         mixp=minprice
         config.set('main', 'minprice', str(minprice))
@@ -319,8 +321,8 @@ def stage3():###################################################################
 
     if price>=target:
         stage=3
-        target=round((midprice)+((midprice*stepp)/100),2)
-        midprice=round((midprice+price)/2,2)
+        maxprice=price
+        midprice=round((midprice+price)/2,3)
 
         order1=config['settings']['order1']
         order2=config['settings']['order2']
@@ -332,16 +334,16 @@ def stage3():###################################################################
         order1=eval(order1) #(stepp*(price*3))/100
         order2=eval(order2)
         order3=eval(order3)
-        target=round(midprice+(stepp*(price*1))/100,2)
-        order1=round((order1),2)
-        order2=round((order2),2)
-        order3=round((order3),2)
+        target=round(midprice+(stepp*(price*1))/100,3)
+        order1=round((order1),3)
+        order2=round((order2),3)
+        order3=round((order3),3)
 
-#    order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=coinquantity,)                                                  #   uncomment for work !!!
+        order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=(coinquantity*2),)                                     #   uncomment for work !!!
         config.set('main', 'stage', str(stage))
         config.set('main', 'enterprice', str(enterprice))
         config.set('main', 'midprice', str(midprice))
-#        config.set('main', 'target', str(target))
+        config.set('main', 'target', str(target))
         with open(pathinifilefull, 'w') as fff:
             config.write(fff)
 def stage4():#########################################################################################  Stage 4
@@ -351,7 +353,7 @@ def stage4():###################################################################
     stage="loss-3"
     minprice=float(min(minprice,price))
 
-    target=round(minprice+((midprice*stepp)/100),2)
+    target=round(minprice+(((midprice*stepp)*2)/100),3)
     if minprice<mixp:
         mixp=minprice
         config.set('main', 'minprice', str(minprice))
@@ -360,8 +362,8 @@ def stage4():###################################################################
 
     if price>=target:
         stage=4
-        target=round((midprice)+((midprice*stepp)/100),2)
-        midprice=round((midprice+price)/2,2)
+        maxprice=price
+        midprice=round((midprice+price)/2,3)
 
         order1=config['settings']['order1']
         order2=config['settings']['order2']
@@ -373,35 +375,47 @@ def stage4():###################################################################
         order1=eval(order1) #(stepp*(price*3))/100
         order2=eval(order2)
         order3=eval(order3)
-        target=round(midprice+(stepp*(price*1))/100,2)
-        order1=round((order1),2)
-        order2=round((order2),2)
-        order3=round((order3),2)
+        target=round(midprice+(stepp*(price*1))/100,3)
+        order1=round((order1),3)
+        order2=round((order2),3)
+        order3=round((order3),3)
 
-#    order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=coinquantity,)                                                  #   uncomment for work !!!
+        order=client.create_order(symbol=coin,side='buy',type='MARKET',quantity=(coinquantity*4),)                                           #   uncomment for work !!!
         config.set('main', 'stage', str(stage))
         config.set('main', 'enterprice', str(enterprice))
         config.set('main', 'midprice', str(midprice))
-#        config.set('main', 'target', str(target))
+        config.set('main', 'target', str(target))
         with open(pathinifilefull, 'w') as fff:
             config.write(fff)
            
 ######################################################################################################  END
 
 while True:
-    time.sleep(1)
-    chek()
-    UI()
-    if status=="waiting":
-        if (stage==0):
-            start()
-        if (stage==1)or(stage==2)or(stage==3)or(stage==4)or(stage==5):
-            waiting()
-        if (stage=="loss-1"):
-            stage2()
-        if (stage=="loss-2"):
-            stage3()
-        if (stage=="loss-3"):
-            stage4()
-    if status=="trailing":
-        trailing()
+    try:
+        klines = client.get_historical_klines("BNBBTC", Client.KLINE_INTERVAL_1MINUTE, "1 day ago UTC")
+        time.sleep(1)
+        chek()
+        UI()
+        if status=="waiting":
+            if (stage==0):
+                start()
+            if (stage==1)or(stage==2)or(stage==3)or(stage==4)or(stage==5):
+                waiting()
+            if (stage=="loss-1"):
+                stage2()
+            if (stage=="loss-2"):
+                stage3()
+            if (stage=="loss-3"):
+                stage4()
+        if status=="trailing":
+            trailing()
+    except BinanceAPIException as e:
+        print(e)
+        print('Something went wrong. Error occured at %s. Wait for 1 hour.')
+        time.sleep(3600)
+        client = Client(api_key,api_secret)
+        continue
+    except Exception:
+        print("Reconecting...")
+        time.sleep(3)
+        continue
